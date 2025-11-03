@@ -1,1 +1,0 @@
-"""Project B optimized source package."""
