@@ -1,0 +1,4 @@
+Total cases: 5
+Accuracy: 1.000
+Invalid-case success rate: 1.000
+Stress-case max duration: 0.001629

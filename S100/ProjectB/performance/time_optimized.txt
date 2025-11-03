@@ -1,0 +1,6 @@
+case,duration_seconds,throughput_ops
+basic,0.00010340,0
+conflict_resolution,0.00005380,0
+large_enrollment,0.00085140,1408
+missing_sections,0.00003290,n/a
+invalid_types,0.00004330,n/a

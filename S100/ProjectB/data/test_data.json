@@ -1,0 +1,187 @@
+{
+  "cases": [
+    {
+      "name": "basic",
+      "description": "Baseline aggregation with direct, group, role grants and suspended actions.",
+      "category": "normal",
+      "input": {
+        "user": {
+          "id": "analyst-001",
+          "direct": {
+            "allow": ["read:kb", "comment:kb"],
+            "deny": ["delete:kb"]
+          },
+          "groups": [
+            {
+              "name": "knowledge-base",
+              "allow": ["read:kb", "share:kb"],
+              "deny": []
+            }
+          ],
+          "roles": [
+            {
+              "name": "kb-editor",
+              "allow": ["read:kb", "edit:kb", {"name": "tag:kb"}],
+              "deny": []
+            }
+          ]
+        },
+        "constraints": {
+          "environment": "prod",
+          "lockdown": false,
+          "suspended_actions": ["share:kb"]
+        }
+      },
+      "expected": {
+        "allowed": ["comment:kb", "edit:kb", "read:kb", "tag:kb"],
+        "denied": ["delete:kb", "share:kb"],
+        "decision_map_subset": {
+          "read:kb": {"status": "allow", "source": "direct"},
+          "share:kb": {"status": "deny", "source": "constraint"},
+          "delete:kb": {"status": "deny", "source": "direct"}
+        }
+      }
+    },
+    {
+      "name": "conflict_resolution",
+      "description": "Conflicting allows and denies across scopes; deny must win.",
+      "category": "normal",
+      "input": {
+        "user": {
+          "id": "analyst-002",
+          "direct": {
+            "allow": ["deploy:ops"],
+            "deny": []
+          },
+          "groups": [
+            {
+              "name": "ops-blue",
+              "allow": ["deploy:ops", "restart:ops"],
+              "deny": []
+            },
+            {
+              "name": "ops-safety",
+              "allow": [],
+              "deny": ["deploy:ops"]
+            }
+          ],
+          "roles": [
+            {
+              "name": "ops-emergency",
+              "allow": ["override:ops"],
+              "deny": ["shutdown:ops"]
+            }
+          ]
+        },
+        "constraints": {
+          "environment": "prod",
+          "lockdown": false,
+          "suspended_actions": []
+        }
+      },
+      "expected": {
+        "allowed": ["override:ops", "restart:ops"],
+        "denied": ["deploy:ops", "shutdown:ops"],
+        "decision_map_subset": {
+          "deploy:ops": {"status": "deny", "source": "group"},
+          "override:ops": {"status": "allow", "source": "role"}
+        }
+      }
+    },
+    {
+      "name": "large_enrollment",
+      "description": "Hundreds of group templates to exercise aggregation cost and timing.",
+      "category": "stress",
+      "input": {
+        "user": {
+          "id": "architect-004",
+          "direct": {
+            "allow": ["view:analytics", "subscribe:reports"],
+            "deny": []
+          },
+          "groups": {
+            "generator": {
+              "type": "replicated",
+              "count": 400,
+              "base": {
+                "name": "analytics-viewers",
+                "allow": ["view:analytics", "view:reports"],
+                "deny": []
+              },
+              "deny_every": 5,
+              "deny_actions": ["export:reports"]
+            }
+          },
+          "roles": [
+            {
+              "name": "report-editor",
+              "allow": ["view:reports", "edit:reports"],
+              "deny": ["delete:reports"]
+            },
+            {
+              "name": "report-auditor",
+              "allow": [{"name": "audit:reports"}],
+              "deny": []
+            }
+          ]
+        },
+        "constraints": {
+          "environment": "stage",
+          "lockdown": false,
+          "suspended_actions": ["share:reports"]
+        }
+      },
+      "expected": {
+        "allowed_count": 5,
+        "denied_count": 3,
+        "must_contain_allowed": ["audit:reports", "edit:reports", "view:analytics", "subscribe:reports"],
+        "must_contain_denied": ["delete:reports", "export:reports", "share:reports"]
+      }
+    },
+    {
+      "name": "missing_sections",
+      "description": "Payload missing roles field should trigger structured validation error.",
+      "category": "invalid",
+      "input": {
+        "user": {
+          "id": "intern-007",
+          "direct": {
+            "allow": ["read:docs"],
+            "deny": []
+          },
+          "groups": [
+            {
+              "name": "docs-trainee",
+              "allow": ["read:docs"],
+              "deny": []
+            }
+          ]
+        },
+        "constraints": {
+          "environment": "prod",
+          "lockdown": false,
+          "suspended_actions": []
+        }
+      },
+      "expected": {
+        "error": "Missing required key: user.roles"
+      }
+    },
+    {
+      "name": "invalid_types",
+      "description": "Non-dictionary user block should raise a descriptive validation error.",
+      "category": "invalid",
+      "input": {
+        "user": "INVALID",
+        "constraints": {
+          "environment": "prod",
+          "lockdown": false,
+          "suspended_actions": []
+        }
+      },
+      "expected": {
+        "error": "Payload must include a 'user' object"
+      }
+    }
+  ]
+}

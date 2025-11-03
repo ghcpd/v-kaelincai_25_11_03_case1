@@ -1,0 +1,6 @@
+case,duration_seconds
+basic,0.00004540
+conflict_resolution,0.00002850
+large_enrollment,0.00162900
+missing_sections,0.00003840
+invalid_types,0.00004050

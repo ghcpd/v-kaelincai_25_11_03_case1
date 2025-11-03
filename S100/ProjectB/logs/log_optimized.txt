@@ -1,0 +1,5 @@
+Total cases: 5
+Accuracy: 1.000
+Mean duration: 0.000217
+95th percentile duration (approx): 0.000851
+Stress mean duration: 0.000851
