@@ -3,7 +3,7 @@ from __future__ import annotations
 import heapq
 import math
 from dataclasses import dataclass
-from typing import Any, Dict, Iterable, List, Optional, Sequence, Set, Tuple
+from typing import Any, Dict, Iterable, List, Optional, Set, Tuple
 
 
 class RouteValidationError(ValueError):
@@ -49,7 +49,7 @@ def _validate_nodes(nodes_raw: Any) -> Tuple[str, ...]:
 
 def _validate_edges(
     edges_raw: Any,
-    nodes: Sequence[str],
+    nodes: Tuple[str, ...],
     blocked_nodes: Set[str],
     blocked_edges: Set[Tuple[str, str]],
 ) -> Dict[str, Dict[str, float]]:
@@ -181,7 +181,6 @@ def compute_fastest_route(payload: Dict[str, Any]) -> Dict[str, Any]:
     queue: List[Tuple[float, str]] = [(0.0, model.source)]
     distances[model.source] = 0.0
 
-    # Priority-queue based Dijkstra for better asymptotic performance.
     while queue:
         current_distance, node = heapq.heappop(queue)
         if node in visited:

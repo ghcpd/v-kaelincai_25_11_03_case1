@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
-from typing import Any, Dict, Iterable, List, Optional, Sequence, Set, Tuple
-
 import math
+from dataclasses import dataclass
+from typing import Any, Dict, Iterable, List, Optional, Set, Tuple
 
 
 class RouteValidationError(ValueError):
@@ -115,7 +114,6 @@ def _build_graph(payload: ValidatedPayload) -> Dict[str, Dict[str, float]]:
             continue
         if (start, end) in payload.blocked_edges:
             continue
-        # Keep the lightest edge when duplicates are supplied.
         existing = adjacency[start].get(end)
         if existing is None or weight < existing:
             adjacency[start][end] = weight
@@ -161,7 +159,6 @@ def compute_fastest_route(payload: Dict[str, Any]) -> Dict[str, Any]:
 
     distances[source] = 0.0
 
-    # Classic O(V^2) Dijkstra variant using a dense scan.
     for _ in nodes:
         current: Optional[str] = None
         current_distance = math.inf

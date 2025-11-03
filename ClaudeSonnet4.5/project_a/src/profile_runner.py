@@ -19,7 +19,7 @@ def _load_cases() -> List[Dict[str, object]]:
 
 
 def _synthetic_dense_case(nodes: int = 120) -> Dict[str, object]:
-    node_names = [f"N{i}" for i in range(nodes)]
+    node_names = [f"N{i}" for node in range(nodes)]
     edges = []
     for start in node_names:
         for end_offset in range(1, 4):

@@ -114,6 +114,8 @@ def main() -> None:
     output_path = ROOT / "compare_report.md"
     with output_path.open("w", encoding="utf-8") as handle:
         handle.write(markdown)
+    
+    print(f"Comparison report generated at: {output_path}")
 
 
 if __name__ == "__main__":
