@@ -1,7 +1,0 @@
-Executed 6 cases | Passed: 6 | Accuracy: 1.000 | Edge success: 1.000
-{"name": "simple_chain", "category": "normal", "passed": true, "elapsed_sec": 0.00018750003073364496, "failure_reason": null}
-{"name": "branching_dependencies", "category": "normal", "passed": true, "elapsed_sec": 4.710000939667225e-05, "failure_reason": null}
-{"name": "padded_durations", "category": "edge", "passed": true, "elapsed_sec": 3.270001616328955e-05, "failure_reason": null}
-{"name": "missing_dependency", "category": "invalid", "passed": true, "elapsed_sec": 2.450007013976574e-05, "failure_reason": null}
-{"name": "cyclic_dependency", "category": "invalid", "passed": true, "elapsed_sec": 1.2899981811642647e-05, "failure_reason": null}
-{"name": "malformed_payload", "category": "invalid", "passed": true, "elapsed_sec": 3.5999109968543053e-06, "failure_reason": null}
