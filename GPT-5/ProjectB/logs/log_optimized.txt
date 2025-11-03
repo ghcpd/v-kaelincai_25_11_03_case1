@@ -1,6 +1,0 @@
-TC1 | category=normal | pass=True | time_ms=0.102 | errors=0
-TC2 | category=normal | pass=False | time_ms=0.126 | errors=0
-TC3 | category=edge | pass=False | time_ms=3.592 | errors=0
-TC4 | category=invalid | pass=True | time_ms=0.029 | errors=0
-TC5 | category=edge | pass=False | time_ms=0.012 | errors=0
-TC6 | category=edge | pass=True | time_ms=0.191 | errors=0

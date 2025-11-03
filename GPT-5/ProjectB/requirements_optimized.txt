@@ -1,2 +1,0 @@
-# Requirements for Project B (optimized implementation)
-psutil==5.9.8

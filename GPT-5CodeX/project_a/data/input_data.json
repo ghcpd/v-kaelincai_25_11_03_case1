@@ -1,0 +1,135 @@
+{
+  "description": "Test corpus for the route computation new feature.",
+  "test_cases": [
+    {
+      "name": "simple_direct",
+      "description": "Baseline path without constraints.",
+      "category": "normal",
+      "input": {
+        "nodes": ["A", "B", "C", "D", "E"],
+        "edges": [
+          {"from": "A", "to": "B", "weight": 3},
+          {"from": "B", "to": "E", "weight": 4},
+          {"from": "A", "to": "C", "weight": 2},
+          {"from": "C", "to": "E", "weight": 10},
+          {"from": "A", "to": "D", "weight": 1.5},
+          {"from": "D", "to": "E", "weight": 10}
+        ],
+        "source": "A",
+        "target": "E",
+        "blocked_nodes": [],
+        "blocked_edges": []
+      },
+      "expected": {
+        "path": ["A", "B", "E"],
+        "cost": 7.0
+      },
+      "expect_error": false
+    },
+    {
+      "name": "blocked_primary_node",
+      "description": "Primary route blocked forcing alternate traversal.",
+      "category": "edge",
+      "input": {
+        "nodes": ["A", "B", "C", "D", "E"],
+        "edges": [
+          {"from": "A", "to": "B", "weight": 3},
+          {"from": "B", "to": "E", "weight": 4},
+          {"from": "A", "to": "C", "weight": 2},
+          {"from": "C", "to": "E", "weight": 5},
+          {"from": "C", "to": "D", "weight": 1},
+          {"from": "D", "to": "E", "weight": 1.2}
+        ],
+        "source": "A",
+        "target": "E",
+        "blocked_nodes": ["B"],
+        "blocked_edges": []
+      },
+      "expected": {
+        "path": ["A", "C", "D", "E"],
+        "cost": 4.2
+      },
+      "expect_error": false
+    },
+    {
+      "name": "blocked_edge_requires_detour",
+      "description": "Edge constraint drives different optimal path.",
+      "category": "edge",
+      "input": {
+        "nodes": ["S", "T", "U", "V", "W"],
+        "edges": [
+          {"from": "S", "to": "T", "weight": 1.0},
+          {"from": "T", "to": "W", "weight": 2.0},
+          {"from": "S", "to": "U", "weight": 2.0},
+          {"from": "U", "to": "V", "weight": 1.5},
+          {"from": "V", "to": "W", "weight": 1.0},
+          {"from": "T", "to": "V", "weight": 1.0}
+        ],
+        "source": "S",
+        "target": "W",
+        "blocked_nodes": [],
+        "blocked_edges": [{"from": "T", "to": "W"}]
+      },
+      "expected": {
+        "path": ["S", "T", "V", "W"],
+        "cost": 2.0
+      },
+      "expect_error": false
+    },
+    {
+      "name": "unreachable_target",
+      "description": "Graph without a valid path triggers computation error.",
+      "category": "edge",
+      "input": {
+        "nodes": ["H", "I", "J"],
+        "edges": [
+          {"from": "H", "to": "I", "weight": 2},
+          {"from": "I", "to": "H", "weight": 2}
+        ],
+        "source": "H",
+        "target": "J",
+        "blocked_nodes": [],
+        "blocked_edges": []
+      },
+      "expected": {},
+      "expect_error": true
+    },
+    {
+      "name": "invalid_missing_nodes",
+      "description": "Edge references node not declared in node list.",
+      "category": "invalid",
+      "input": {
+        "nodes": ["A", "B"],
+        "edges": [
+          {"from": "A", "to": "C", "weight": 4}
+        ],
+        "source": "A",
+        "target": "B",
+        "blocked_nodes": [],
+        "blocked_edges": []
+      },
+      "expected": {},
+      "expect_error": true
+    },
+    {
+      "name": "degenerate_same_node",
+      "description": "Source equals target producing trivial path.",
+      "category": "normal",
+      "input": {
+        "nodes": ["X", "Y"],
+        "edges": [
+          {"from": "X", "to": "Y", "weight": 3}
+        ],
+        "source": "X",
+        "target": "X",
+        "blocked_nodes": [],
+        "blocked_edges": []
+      },
+      "expected": {
+        "path": ["X"],
+        "cost": 0.0
+      },
+      "expect_error": false
+    }
+  ]
+}

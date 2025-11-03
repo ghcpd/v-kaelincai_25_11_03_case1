@@ -1,4 +1,0 @@
-suite_time_ms=2.953
-peak_memory_bytes=167261
-accuracy=0.5
-edge_case_success_rate=0.6666666666666666

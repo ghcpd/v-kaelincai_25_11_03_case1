@@ -1,3 +1,0 @@
-# Requirements for Project A (naive implementation)
-# Pinned versions for reproducibility
-psutil==5.9.8
