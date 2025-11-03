@@ -1,0 +1,91 @@
+[
+  {
+    "name": "simple_chain",
+    "category": "normal",
+    "input": {
+      "tasks": [
+        {"id": "design", "duration": 2, "depends_on": []},
+        {"id": "build", "duration": 3, "depends_on": ["design"]},
+        {"id": "deploy", "duration": 1, "depends_on": ["build"]}
+      ]
+    },
+    "expected": {
+      "total_duration": 6.0,
+      "schedule": {
+        "design": {"start": 0.0, "finish": 2.0},
+        "build": {"start": 2.0, "finish": 5.0},
+        "deploy": {"start": 5.0, "finish": 6.0}
+      }
+    }
+  },
+  {
+    "name": "branching_dependencies",
+    "category": "normal",
+    "input": {
+      "tasks": [
+        {"id": "ingest", "duration": 4, "depends_on": []},
+        {"id": "clean", "duration": 5, "depends_on": ["ingest"]},
+        {"id": "analyze", "duration": 6, "depends_on": ["ingest"]},
+        {"id": "report", "duration": 3, "depends_on": ["clean", "analyze"]}
+      ]
+    },
+    "expected": {
+      "total_duration": 13.0,
+      "schedule": {
+        "ingest": {"start": 0.0, "finish": 4.0},
+        "clean": {"start": 4.0, "finish": 9.0},
+        "analyze": {"start": 4.0, "finish": 10.0},
+        "report": {"start": 10.0, "finish": 13.0}
+      }
+    }
+  },
+  {
+    "name": "padded_durations",
+    "category": "edge",
+    "input": {
+      "tasks": [
+        {"id": "foundation", "duration": 10, "depends_on": []},
+        {"id": "structure", "duration": 25, "depends_on": ["foundation"]},
+        {"id": "inspection", "duration": 1, "depends_on": ["structure"]},
+        {"id": "handover", "duration": 2, "depends_on": ["inspection"]}
+      ]
+    },
+    "expected": {
+      "total_duration": 38.0,
+      "schedule": {
+        "foundation": {"start": 0.0, "finish": 10.0},
+        "structure": {"start": 10.0, "finish": 35.0},
+        "inspection": {"start": 35.0, "finish": 36.0},
+        "handover": {"start": 36.0, "finish": 38.0}
+      }
+    }
+  },
+  {
+    "name": "missing_dependency",
+    "category": "invalid",
+    "input": {
+      "tasks": [
+        {"id": "alpha", "duration": 2, "depends_on": []},
+        {"id": "beta", "duration": 1, "depends_on": ["gamma"]}
+      ]
+    },
+    "expect_error": "depends on unknown task"
+  },
+  {
+    "name": "cyclic_dependency",
+    "category": "invalid",
+    "input": {
+      "tasks": [
+        {"id": "first", "duration": 1, "depends_on": ["second"]},
+        {"id": "second", "duration": 1, "depends_on": ["first"]}
+      ]
+    },
+    "expect_error": "Cycle detected"
+  },
+  {
+    "name": "malformed_payload",
+    "category": "invalid",
+    "input": "not a dict",
+    "expect_error": "Payload must be"
+  }
+]
